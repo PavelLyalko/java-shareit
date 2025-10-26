@@ -7,7 +7,7 @@ public class RequestController {
     private RequestService requestService;
 
     public ItemRequest sendRequest(@RequestHeader("X-Later-User-Id") long userId,
-                                   @PathVariable String text){
+                                   @PathVariable String text) {
         return requestService.sendRequest(userId, text);
     }
 }
