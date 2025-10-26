@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import ru.practicum.shareit.exception.InvalidAccessException;
@@ -15,11 +14,16 @@ import ru.practicum.shareit.user.UserRepository;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final ItemMapper itemMapper;
+
+    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository, ItemMapper itemMapper) {
+        this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
+        this.itemMapper = itemMapper;
+    }
 
     @Override
     public Item addNewItem(Long userId, ItemDto itemDto) {

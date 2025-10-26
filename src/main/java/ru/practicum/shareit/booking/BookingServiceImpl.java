@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -12,12 +11,17 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.request.ItemRequest;
 
 @Service
-@RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
     private final ItemRepository itemRepository;
+
+    public BookingServiceImpl(BookingRepository bookingRepository, BookingMapper bookingMapper, ItemRepository itemRepository) {
+        this.bookingRepository = bookingRepository;
+        this.bookingMapper = bookingMapper;
+        this.itemRepository = itemRepository;
+    }
 
     @Override
     public ItemRequest sendRequest(long userId, String text) {
