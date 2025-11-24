@@ -53,10 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteuser(Long userId) {
-        List<User> users = getAllUsers();
-        if (users.contains(getUserById(userId))) {
-            users.remove(userId);
-        }
+        repository.deleteUserById(userId);
     }
 
     private boolean validationEmail(User user, List<User> users) {

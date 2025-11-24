@@ -29,6 +29,11 @@ public class UserRepositoryImpl implements UserRepository {
         return users.stream().filter(user -> Objects.equals(user.getId(), userId)).findFirst();
     }
 
+    @Override
+    public void deleteUserById(Long userId) {
+        users.removeIf(user -> Objects.equals(user.getId(), userId));
+    }
+
     private long getId() {
         long lastId = users.stream()
                 .mapToLong(User::getId)
