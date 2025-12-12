@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
-    private final String X_SHARER_USER_ID_HEADER = "X-Sharer-User-ID";
+    public static final String X_SHARER_USER_ID_HEADER = "X-Sharer-User-Id";
 
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
