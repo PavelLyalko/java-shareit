@@ -18,10 +18,9 @@ public class UserServiceImpl implements UserService {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private final UserRepository repository;
 
-
     @Override
     public List<UserDto> getAllUsers() {
-         return repository.findAll().stream().map(UserMapper :: toUserDto).toList();
+         return repository.findAll().stream().map(UserMapper::toUserDto).toList();
     }
 
     @Override

@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
-    private final static String X_SHARER_USER_ID_HEADER = "X-Sharer-User-ID";
+    private final String X_SHARER_USER_ID_HEADER = "X-Sharer-User-ID";
 
     public ItemController(ItemService itemService) {
         this.itemService = itemService;
@@ -61,5 +61,4 @@ public class ItemController {
                                      @RequestParam("text") String text) {
         return itemService.potentialItems(text, userId);
     }
-
 }
