@@ -1,8 +1,10 @@
 package ru.practicum.shareit.user;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.InvalidDataException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -10,45 +12,42 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     private final UserRepository repository;
 
-    public UserServiceImpl(UserRepository repository) {
-        this.repository = repository;
+
+    @Override
+    public List<UserDto> getAllUsers() {
+         return repository.findAll().stream().map(UserMapper :: toUserDto).toList();
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return repository.findAll();
-    }
-
-    @Override
-    public User saveUser(User user) {
-        List<User> users = getAllUsers();
-        if (user.getEmail() == null || user.getEmail().isEmpty()) {
-            throw new InvalidDataException("Поле email не может  быть пустым.");
-        }
+    public UserDto saveUser(UserDto userDto) {
+        List<UserDto> users = getAllUsers();
+        User user = UserMapper.toUser(userDto);
         validationEmail(user, users);
-        return repository.save(user);
+        return UserMapper.toUserDto(repository.save(user));
     }
 
     @Override
-    public User getUserById(Long userId) {
-        return repository.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден."));
+    public UserDto getUserById(Long userId) {
+        User user = repository.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден."));
+        return UserMapper.toUserDto(user);
     }
 
     @Override
-    public User updateUser(Long userId, User user) {
-        User person = getUserById(userId);
-        if (user.getName() != null && !user.getName().isEmpty()) {
-            person.setName(user.getName());
+    public UserDto updateUser(Long userId, UserDto userDto) {
+        UserDto user = getUserById(userId);
+        if (userDto.getName() != null && !userDto.getName().isEmpty()) {
+            user.setName(userDto.getName());
         }
-        if (user.getEmail() != null && !user.getEmail().isEmpty() && validationEmail(user, getAllUsers())) {
-            person.setEmail(user.getEmail());
+        if (userDto.getEmail() != null && !userDto.getEmail().isEmpty() && validationEmail(UserMapper.toUser(userDto), getAllUsers())) {
+            user.setEmail(userDto.getEmail());
         }
-        return person;
+        return user;
     }
 
     @Override
@@ -56,7 +55,7 @@ public class UserServiceImpl implements UserService {
         repository.deleteUserById(userId);
     }
 
-    private boolean validationEmail(User user, List<User> users) {
+    private boolean validationEmail(User user, List<UserDto> users) {
         Matcher matcher = EMAIL_PATTERN.matcher(user.getEmail());
         if (!matcher.matches()) {
             throw new InvalidDataException("Неверный формат email");

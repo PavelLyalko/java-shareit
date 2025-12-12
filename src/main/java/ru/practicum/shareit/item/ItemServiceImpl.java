@@ -1,9 +1,9 @@
 package ru.practicum.shareit.item;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import ru.practicum.shareit.exception.InvalidAccessException;
-import ru.practicum.shareit.exception.InvalidFieldException;
 import ru.practicum.shareit.exception.InvalidUserException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -14,30 +14,15 @@ import ru.practicum.shareit.user.UserRepository;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final ItemMapper itemMapper;
 
-    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository, ItemMapper itemMapper) {
-        this.itemRepository = itemRepository;
-        this.userRepository = userRepository;
-        this.itemMapper = itemMapper;
-    }
-
     @Override
     public Item addNewItem(Long userId, ItemDto itemDto) {
         User user = userRepository.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден."));
-        if (itemDto.getAvailable() == null) {
-            throw new InvalidFieldException("Поле available не может быть пустым.");
-        }
-        if (itemDto.getName() == null || itemDto.getName().isEmpty()) {
-            throw new InvalidFieldException("Поле name не может быть null или пустым.");
-        }
-
-        if (itemDto.getDescription() == null || itemDto.getDescription().isEmpty()) {
-            throw new InvalidFieldException("Поле description не может быть null или пустым.");
-        }
         Item item = itemMapper.toItem(itemDto);
         item.setOwner(user);
         itemRepository.save(item);
