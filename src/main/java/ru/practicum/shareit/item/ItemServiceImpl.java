@@ -8,8 +8,9 @@ import ru.practicum.shareit.exception.InvalidUserException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.item.model.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item addNewItem(Long userId, ItemDto itemDto) {
-        User user = userRepository.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден."));
         Item item = itemMapper.toItem(itemDto);
         item.setOwner(user);
         itemRepository.save(item);
@@ -35,12 +36,12 @@ public class ItemServiceImpl implements ItemService {
         if (item.getOwner().getId() != userId) {
             throw new InvalidAccessException("Пользователь с id " + userId + " не имеет прав на удаление предмета с id " + itemId);
         }
-        itemRepository.deleteItem(item);
+        itemRepository.delete(item);
     }
 
     @Override
     public List<Item> getItems(long userId) {
-        return itemRepository.findByUserId(userId);
+        return itemRepository.findAllByOwnerId(userId);
     }
 
     @Override
@@ -76,6 +77,6 @@ public class ItemServiceImpl implements ItemService {
         if (text == null || text.isEmpty()) {
             return List.of();
         }
-        return itemRepository.potentialItems(text);
+        return null; //itemRepository.potentialItems(text);
     }
 }

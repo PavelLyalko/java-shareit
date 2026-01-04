@@ -20,7 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers() {
-         return repository.findAll().stream().map(UserMapper::toUserDto).toList();
+         return repository.findAll().stream()
+                 .map(UserMapper::toUserDto)
+                 .toList();
     }
 
     @Override
@@ -33,7 +35,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(Long userId) {
-        User user = repository.getUserById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден."));
+        User user = repository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден."));
         return UserMapper.toUserDto(user);
     }
 
@@ -51,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteuser(Long userId) {
-        repository.deleteUserById(userId);
+        repository.deleteById(userId);
     }
 
     private boolean validationEmail(User user, List<UserDto> users) {

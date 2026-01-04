@@ -111,4 +111,8 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-email-check-constraint" author="yourname">
+        <addUniqueConstraint tableName="users" columnNames="email"/>
+    </changeSet>
+
 </databaseChangeLog>
