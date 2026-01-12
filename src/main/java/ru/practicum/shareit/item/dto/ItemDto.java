@@ -12,17 +12,13 @@ import ru.practicum.shareit.user.model.User;
 @Data
 public class ItemDto {
     private Long id;
-
     @NotNull
     @NotEmpty
     private String name;
-
     private Long request;
-
     @NotNull
     @NotEmpty
     private String description;
-
     @NotNull
     private Boolean available;
     private User owner;

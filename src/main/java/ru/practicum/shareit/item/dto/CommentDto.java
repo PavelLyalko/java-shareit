@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.Data;
-import lombok.Value;
 
 @Data
 public class CommentDto {

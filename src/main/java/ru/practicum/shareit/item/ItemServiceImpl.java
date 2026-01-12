@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item;
 
 import jakarta.transaction.Transactional;
-import liquibase.util.StringClauses;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +11,15 @@ import ru.practicum.shareit.exception.InvalidAccessException;
 import ru.practicum.shareit.exception.InvalidUserException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentResponse;
+import ru.practicum.shareit.item.dto.ItemCommentsResponse;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.CommentRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.user.dto.ItemResponse;
+import ru.practicum.shareit.item.dto.ItemResponse;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -55,30 +56,40 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemResponse> getItems(long userId) {
         return itemRepository.findAllByOwnerId(userId).stream()
-                .map(i -> {
+                .map(item -> {
                     ItemResponse itemResponse = new ItemResponse();
-                    itemResponse.setId(i.getId());
-                    itemResponse.setName(i.getName());
-                    itemResponse.setDescription(i.getDescription());
-                    itemResponse.setOwner(i.getOwner());
-                    itemResponse.setAvailable(i.getAvailable());
-                    Booking lastBooking = getLastBooking(i.getBookings());
-                    Booking nextBooking = getNextBooking(i.getBookings());
+                    itemResponse.setId(item.getId());
+                    itemResponse.setName(item.getName());
+                    itemResponse.setDescription(item.getDescription());
+                    itemResponse.setOwner(item.getOwner());
+                    itemResponse.setAvailable(item.getAvailable());
 
-                    itemResponse.setLastBookingStartDate(lastBooking.getStart());
-                    itemResponse.setLastBookingEndDate(lastBooking.getEnd());
-                    itemResponse.setNextBookingStartDate(nextBooking.getStart());
-                    itemResponse.setNextBookingEndDate(nextBooking.getEnd());
+                    Booking lastBooking = getLastBooking(item.getBookings());
+                    Booking nextBooking = getNextBooking(item.getBookings());
+
+                    if (lastBooking != null) {
+                        itemResponse.setLastBookingStartDate(lastBooking.getStart());
+                        itemResponse.setLastBookingEndDate(lastBooking.getEnd());
+                    }
+
+                    if (nextBooking != null) {
+                        itemResponse.setNextBookingStartDate(nextBooking.getStart());
+                        itemResponse.setNextBookingEndDate(nextBooking.getEnd());
+                    }
+
                     return itemResponse;
                 })
                 .toList();
     }
 
     private Booking getLastBooking(List<Booking> bookings) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime threshold = now.minusSeconds(10);
+
         return bookings.stream()
                 .filter(b -> BookingStatus.APPROVED == b.getStatus())
                 .sorted(Comparator.comparing(Booking::getEnd).reversed())
-                .filter(b -> b.getEnd().isBefore(LocalDateTime.now()))
+                .filter(b -> b.getEnd().isBefore(threshold))
                 .findFirst()
                 .orElse(null);
     }
@@ -112,12 +123,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getItem(long userId, long itemId) {
+    public ItemCommentsResponse getItem(long userId, long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Предмет с id " + itemId + " не найден."));
-        if (userId != item.getOwner().getId()) {
-            throw new InvalidAccessException("Пользователь с id " + userId + " не имеет прав на получение предмета с id " + itemId);
-        }
-        return item;
+
+        ItemCommentsResponse itemCommentsResponse = ItemCommentsMapper.toItemCommentsResponse(item);
+        itemCommentsResponse.setNextBooking(getNextBooking(item.getBookings()));
+        itemCommentsResponse.setLastBooking(getLastBooking(item.getBookings()));
+        itemCommentsResponse.setComments(commentRepository.findAllByItemId(itemId));
+        return itemCommentsResponse;
     }
 
     @Override
@@ -125,21 +138,34 @@ public class ItemServiceImpl implements ItemService {
         if (text == null || text.isEmpty()) {
             return List.of();
         }
-        return null; //itemRepository.potentialItems(text);
+        return itemRepository.searchByText(text);
     }
 
     @Transactional
     @Override
-    public void addComment(CommentDto commentDto) {
-        if (!bookingRepository.existsBookingByBookerIdAndItemId(commentDto.getUserId(), commentDto.getItemId())) {
+    public CommentResponse addComment(CommentDto commentDto) {
+        Booking booking = bookingRepository.findBookingByBookerIdAndItemId(commentDto.getUserId(), commentDto.getItemId());
+        if (booking == null) {
             throw new InvalidAccessException("Пользователь не делал бронирование этой вещи");
+        }
+
+        if (booking.getStatus() != BookingStatus.APPROVED) {
+            throw new InvalidAccessException("Бронирование не подтверждено");
+        }
+
+        if (booking.getEnd().isAfter(LocalDateTime.now())) {
+            throw new InvalidAccessException("Бронирование ещё не завершено");
         }
 
         Comment comment = new Comment();
         comment.setText(commentDto.getText());
-        comment.setAuthor(userRepository.findById(commentDto.getUserId()).orElse(null));
-        comment.setItem(itemRepository.findById(commentDto.getItemId()).orElse(null));
+        comment.setAuthor(userRepository.findById(commentDto.getUserId())
+                .orElseThrow(() -> new NotFoundException("Пользователь с id " + commentDto.getUserId() + " не найден")));
+        comment.setItem(itemRepository.findById(commentDto.getItemId())
+                .orElseThrow(() -> new NotFoundException("Вещь с id " + commentDto.getItemId() + " не найдена")));
         comment.setCreated(LocalDateTime.now());
+
         commentRepository.save(comment);
+        return CommentMapper.toCommentResponse(comment);
     }
 }

@@ -36,6 +36,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b JOIN b.item i JOIN i.owner u WHERE b.start <= :now AND :now <= b.end AND u.id = :ownerId")
     List<Booking> findAllByItemOwnerIdAndCurrentBookings(@Param("ownerId") long ownerId, @Param("now") LocalDateTime now);
 
-    boolean existsBookingByBookerIdAndItemId(long bookerId, long itemId);
+    Booking findBookingByBookerIdAndItemId(long bookerId, long itemId);
 
 }

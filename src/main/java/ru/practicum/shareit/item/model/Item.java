@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,6 +35,7 @@ public class Item {
     @OneToOne(cascade = CascadeType.ALL)
     private ItemRequest request;
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Booking> bookings;
     private String description;
     private Boolean available;

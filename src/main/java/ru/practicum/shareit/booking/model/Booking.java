@@ -40,12 +40,4 @@ public class Booking {
     private User booker;
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
-
-    public boolean isValid() {
-        if (start == null || end == null) {
-            return false;
-        }
-        return !start.isAfter(end);
-    }
-
 }
