@@ -1,5 +1,8 @@
 package ru.practicum.shareit.booking.dto;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class BookingDtoMapper {
     public static CreateBookingDto toCreateBookingDto(CreateBookingRequest createBookingRequest) {
         CreateBookingDto createBookingDto = new CreateBookingDto();
