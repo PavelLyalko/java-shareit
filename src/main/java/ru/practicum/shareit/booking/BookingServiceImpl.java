@@ -35,7 +35,7 @@ public class BookingServiceImpl implements BookingService {
             throw new InvalidAccessException("Вещь не доступна для бронирования");
         }
 
-        if (item.getOwner().getId() == createBookingDto.getBookerId()) {
+        if (item.getOwner().getId().equals(createBookingDto.getBookerId())) {
             throw new InvalidAccessException("Владелец не может забронировать свою вещь");
         }
 
