@@ -14,10 +14,12 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentResponse;
 import ru.practicum.shareit.item.dto.ItemCommentsResponse;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemPotentialDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.CommentRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemRepository;
+import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.item.dto.ItemResponse;
 import ru.practicum.shareit.user.model.User;
@@ -36,12 +38,12 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
 
     @Override
-    public Item addNewItem(Long userId, ItemDto itemDto) {
+    public ItemDto addNewItem(Long userId, ItemDto itemDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден."));
         Item item = itemMapper.toItem(itemDto);
         item.setOwner(user);
         itemRepository.save(item);
-        return item;
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class ItemServiceImpl implements ItemService {
                     itemResponse.setId(item.getId());
                     itemResponse.setName(item.getName());
                     itemResponse.setDescription(item.getDescription());
-                    itemResponse.setOwner(item.getOwner());
+                    itemResponse.setOwner(UserMapper.toUserDto(item.getOwner()));
                     itemResponse.setAvailable(item.getAvailable());
 
                     Booking lastBooking = getLastBooking(item.getBookings());
@@ -104,7 +106,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item editItem(long userId, ItemDto itemDto, long itemId) {
+    public ItemDto editItem(long userId, ItemDto itemDto, long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Предмет с id " + itemId + " не найден."));
         if (userId != item.getOwner().getId()) {
             throw new InvalidUserException("Пользователь с id " + userId + " не имеет прав на редактирование предмета с id " + itemId);
@@ -119,26 +121,29 @@ public class ItemServiceImpl implements ItemService {
             item.setAvailable(itemDto.getAvailable());
         }
         itemRepository.save(item);
-        return item;
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
     public ItemCommentsResponse getItem(long userId, long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Предмет с id " + itemId + " не найден."));
-
+        List<Comment> comments = commentRepository.findAllByItemId(item.getId());
         ItemCommentsResponse itemCommentsResponse = ItemCommentsMapper.toItemCommentsResponse(item);
         itemCommentsResponse.setNextBooking(getNextBooking(item.getBookings()));
         itemCommentsResponse.setLastBooking(getLastBooking(item.getBookings()));
-        itemCommentsResponse.setComments(commentRepository.findAllByItemId(itemId));
+        itemCommentsResponse.setComments(comments.stream().map(CommentMapper::toCommentResponse).toList());
+
         return itemCommentsResponse;
     }
 
     @Override
-    public List<Item> potentialItems(String text, long userId) {
+    public List<ItemPotentialDto> potentialItems(String text, long userId) {
         if (text == null || text.isEmpty()) {
             return List.of();
         }
-        return itemRepository.searchByText(text);
+        return itemRepository.searchByText(text).stream()
+                .map(ItemMapper:: toItemPotentialDto)
+                .toList();
     }
 
     @Transactional

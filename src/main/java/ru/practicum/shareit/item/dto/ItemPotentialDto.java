@@ -1,15 +1,13 @@
 package ru.practicum.shareit.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import ru.practicum.shareit.user.dto.UserDto;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
-public class ItemDto {
+public class ItemPotentialDto {
     private Long id;
     @NotNull
     @NotEmpty
@@ -19,4 +17,5 @@ public class ItemDto {
     private String description;
     @NotNull
     private Boolean available;
+    private UserDto owner;
 }

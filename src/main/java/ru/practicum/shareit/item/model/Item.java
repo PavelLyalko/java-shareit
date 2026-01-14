@@ -39,7 +39,7 @@ public class Item {
     private List<Booking> bookings;
     private String description;
     private Boolean available;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
 }

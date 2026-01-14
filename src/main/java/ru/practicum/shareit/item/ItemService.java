@@ -5,24 +5,24 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentResponse;
 import ru.practicum.shareit.item.dto.ItemCommentsResponse;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemPotentialDto;
 import ru.practicum.shareit.item.dto.ItemResponse;
 
 import java.util.List;
 
 public interface ItemService {
 
-    Item addNewItem(Long userId, ItemDto itemDto) throws NotFoundException;
+    ItemDto addNewItem(Long userId, ItemDto itemDto) throws NotFoundException;
 
     void deleteItem(long userId, long itemId);
 
     List<ItemResponse> getItems(long userId);
 
-    Item editItem(long userId, ItemDto itemDto, long itemId);
+    ItemDto editItem(long userId, ItemDto itemDto, long itemId);
 
     ItemCommentsResponse getItem(long userId, long itemId);
 
-    List<Item> potentialItems(String text, long userId);
+    List<ItemPotentialDto> potentialItems(String text, long userId);
 
     CommentResponse addComment(CommentDto commentDto);
 }

@@ -22,7 +22,6 @@ import java.util.List;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
-    private final BookingMapper bookingMapper;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
@@ -51,7 +50,7 @@ public class BookingServiceImpl implements BookingService {
 
         Booking savedBooking = bookingRepository.save(booking);
 
-        return bookingMapper.createBookingDto(savedBooking);
+        return BookingMapper.createBookingDto(savedBooking);
     }
 
     @Override
@@ -71,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
         bookingRepository.save(booking);
 
-        return bookingMapper.createBookingDto(booking);
+        return BookingMapper.createBookingDto(booking);
     }
 
     @Override
@@ -81,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
             throw new InvalidAccessException("Пользователь с id: " + userId + " не имеет прав на получение данных о бронировании id " + bookingId);
         }
-        return bookingMapper.createBookingDto(booking);
+        return BookingMapper.createBookingDto(booking);
     }
 
     @Override
@@ -107,7 +106,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         return bookings.stream()
-                .map(bookingMapper::createBookingDto)
+                .map(BookingMapper::createBookingDto)
                 .toList();
     }
 
@@ -139,7 +138,7 @@ public class BookingServiceImpl implements BookingService {
             bookings = bookingRepository.findAllByItemOwnerIdAndStatus(userId, BookingStatus.REJECTED);
         }
         return bookings.stream()
-                .map(bookingMapper::createBookingDto)
+                .map(BookingMapper::createBookingDto)
                 .toList();
     }
 }

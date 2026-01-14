@@ -15,7 +15,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentResponse;
 import ru.practicum.shareit.item.dto.ItemCommentsResponse;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemPotentialDto;
 import ru.practicum.shareit.item.dto.ItemResponse;
 
 import java.util.List;
@@ -36,7 +36,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public Item add(@RequestHeader(X_SHARER_USER_ID_HEADER) Long userId,
+    public ItemDto add(@RequestHeader(X_SHARER_USER_ID_HEADER) Long userId,
                     @Valid @RequestBody ItemDto itemDto) {
         return itemService.addNewItem(userId, itemDto);
     }
@@ -48,7 +48,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public Item editItem(@RequestHeader(X_SHARER_USER_ID_HEADER) long userId,
+    public ItemDto editItem(@RequestHeader(X_SHARER_USER_ID_HEADER) long userId,
                          @PathVariable long itemId,
                          @RequestBody ItemDto itemDto) {
         return itemService.editItem(userId, itemDto, itemId);
@@ -61,8 +61,8 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<Item> potentialItems(@RequestHeader(X_SHARER_USER_ID_HEADER) long userId,
-                                     @RequestParam("text") String text) {
+    public List<ItemPotentialDto> potentialItems(@RequestHeader(X_SHARER_USER_ID_HEADER) long userId,
+                                                 @RequestParam("text") String text) {
         return itemService.potentialItems(text, userId);
     }
 
