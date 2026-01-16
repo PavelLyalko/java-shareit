@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     @EntityGraph(attributePaths = "bookings")
     List<Item> findAllByOwnerId(Long id);
+
     @EntityGraph(attributePaths = "bookings")
     Optional<Item> findById(Long id);
 
