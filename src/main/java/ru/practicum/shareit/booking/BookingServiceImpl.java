@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     @Override
     public BookingDto createBooking(CreateBookingDto createBookingDto) {
         Item item = itemRepository.findById(createBookingDto.getItemId())
@@ -53,6 +55,7 @@ public class BookingServiceImpl implements BookingService {
         return BookingMapper.createBookingDto(savedBooking);
     }
 
+    @Transactional
     @Override
     public BookingDto acceptBooking(long userId, boolean approved, long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
@@ -110,6 +113,7 @@ public class BookingServiceImpl implements BookingService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public List<BookingDto> getBookingsByOwner(long userId, BookingState state) {
 

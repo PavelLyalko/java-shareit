@@ -37,6 +37,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
 
+    @Transactional
     @Override
     public ItemDto addNewItem(Long userId, ItemDto itemDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь с id " + userId + " не найден."));
@@ -46,6 +47,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toItemDto(item);
     }
 
+    @Transactional
     @Override
     public void deleteItem(long userId, long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Предмет с id " + itemId + " не найден."));
@@ -59,30 +61,31 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemResponse> getItems(long userId) {
         return itemRepository.findAllByOwnerId(userId).stream()
                 .map(item -> {
-                    ItemResponse itemResponse = new ItemResponse();
-                    itemResponse.setId(item.getId());
-                    itemResponse.setName(item.getName());
-                    itemResponse.setDescription(item.getDescription());
-                    itemResponse.setOwner(UserMapper.toUserDto(item.getOwner()));
-                    itemResponse.setAvailable(item.getAvailable());
-
                     Booking lastBooking = getLastBooking(item.getBookings());
                     Booking nextBooking = getNextBooking(item.getBookings());
 
-                    if (lastBooking != null) {
-                        itemResponse.setLastBookingStartDate(lastBooking.getStart());
-                        itemResponse.setLastBookingEndDate(lastBooking.getEnd());
-                    }
+                    LocalDateTime lastBookingStartDate = (lastBooking != null) ? lastBooking.getStart() : null;
+                    LocalDateTime lastBookingEndDate = (lastBooking != null) ? lastBooking.getEnd() : null;
+                    LocalDateTime nextBookingStartDate = (nextBooking != null) ? nextBooking.getStart() : null;
+                    LocalDateTime nextBookingEndDate = (nextBooking != null) ? nextBooking.getEnd() : null;
 
-                    if (nextBooking != null) {
-                        itemResponse.setNextBookingStartDate(nextBooking.getStart());
-                        itemResponse.setNextBookingEndDate(nextBooking.getEnd());
-                    }
-
-                    return itemResponse;
+                    return new ItemResponse(
+                            item.getId(),
+                            item.getName(),
+                            item.getDescription(),
+                            item.getAvailable(),
+                            UserMapper.toUserDto(item.getOwner()),
+                            lastBookingStartDate,
+                            lastBookingEndDate,
+                            null,
+                            null,
+                            nextBookingStartDate,
+                            nextBookingEndDate
+                    );
                 })
                 .toList();
     }
+
 
     private Booking getLastBooking(List<Booking> bookings) {
         LocalDateTime now = LocalDateTime.now();
@@ -105,6 +108,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElse(null);
     }
 
+    @Transactional
     @Override
     public ItemDto editItem(long userId, ItemDto itemDto, long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Предмет с id " + itemId + " не найден."));
@@ -124,6 +128,7 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toItemDto(item);
     }
 
+    @Transactional
     @Override
     public ItemCommentsResponse getItem(long userId, long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Предмет с id " + itemId + " не найден."));
@@ -142,7 +147,7 @@ public class ItemServiceImpl implements ItemService {
             return List.of();
         }
         return itemRepository.searchByText(text).stream()
-                .map(ItemMapper:: toItemPotentialDto)
+                .map(ItemMapper::toItemPotentialDto)
                 .toList();
     }
 
