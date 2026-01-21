@@ -38,7 +38,7 @@ public class ItemController {
     @PostMapping
     public ItemDto add(@RequestHeader(X_SHARER_USER_ID_HEADER) Long userId,
                     @Valid @RequestBody ItemDto itemDto) {
-        return itemService.addNewItem(userId, itemDto);
+        return itemService.addNewItem(userId, itemDto);//TODO ПРОВЕРИТЬ REQUEST_ID
     }
 
     @DeleteMapping("/{itemId}")
