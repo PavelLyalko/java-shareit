@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -32,7 +31,7 @@ public class Item {
     private Long id;
     @NotNull
     private String name;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private ItemRequest request;
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -6,14 +6,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.request.dto.RequestDto;
 import ru.practicum.shareit.request.dto.ResponseDto;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/requests")
 @RequiredArgsConstructor
-@RestController("/requests")
 public class RequestController {
     private final RequestService requestService;
     private static final String X_SHARER_USER_ID_HEADER = "X-Sharer-User-Id";

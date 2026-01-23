@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class RequestController {
 
     @PostMapping
     public ResponseEntity<Object> addRequest(@RequestHeader(X_SHARER_USER_ID_HEADER) long requestorId,
-                                             @RequestBody RequestDto requestDto) {
+                                             @RequestBody @Valid RequestDto requestDto) {
         return requestClient.addRequest(requestDto, requestorId);
     }
 
