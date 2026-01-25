@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-
 @Controller
 @RequestMapping(path = "/items")
 @RequiredArgsConstructor
@@ -35,26 +34,26 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<Object> add(@RequestHeader(X_SHARER_USER_ID_HEADER) Long userId,
-                       @Valid @RequestBody ItemDto itemDto) {
+                                      @Valid @RequestBody ItemDto itemDto) {
         return itemClient.addNewItem(userId, itemDto);
     }
 
     @DeleteMapping("/{itemId}")
-    public ResponseEntity<Object>  deleteItem(@RequestHeader(X_SHARER_USER_ID_HEADER) long userId,
-                           @PathVariable(name = "itemId") long itemId) {
+    public ResponseEntity<Object> deleteItem(@RequestHeader(X_SHARER_USER_ID_HEADER) long userId,
+                                             @PathVariable(name = "itemId") long itemId) {
         return itemClient.deleteItem(userId, itemId);
     }
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> editItem(@RequestHeader(X_SHARER_USER_ID_HEADER) long userId,
-                            @PathVariable long itemId,
-                            @RequestBody ItemDto itemDto) {
+                                           @PathVariable long itemId,
+                                           @RequestBody ItemDto itemDto) {
         return itemClient.editItem(userId, itemDto, itemId);
     }
 
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getItem(@RequestHeader(X_SHARER_USER_ID_HEADER) long userId,
-                                        @PathVariable(name = "itemId") long itemId) {
+                                          @PathVariable(name = "itemId") long itemId) {
         return itemClient.getItem(userId, itemId);
     }
 
@@ -66,8 +65,8 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@RequestHeader(X_SHARER_USER_ID_HEADER) long userId,
-                                      @PathVariable long itemId,
-                                      @Valid @RequestBody CommentDto commentDto) {
+                                             @PathVariable long itemId,
+                                             @Valid @RequestBody CommentDto commentDto) {
         commentDto.setItemId(itemId);
         commentDto.setUserId(userId);
         return itemClient.addComment(commentDto);

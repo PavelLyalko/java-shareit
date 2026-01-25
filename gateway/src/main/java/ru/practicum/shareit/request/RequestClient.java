@@ -23,13 +23,12 @@ public class RequestClient extends BaseClient {
     }
 
     public ResponseEntity<Object> addRequest(RequestDto requestDto, long requestorId) {
-        return post("",requestorId, requestDto );
+        return post("", requestorId, requestDto);
     }
 
     public ResponseEntity<Object> getRequests(long requestorId) {
-        return get("",requestorId);
+        return get("", requestorId);
     }
-
 
     public ResponseEntity<Object> getAllRequests() {
         return get("/all");

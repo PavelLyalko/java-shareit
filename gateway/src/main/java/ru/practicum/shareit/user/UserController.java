@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.practicum.shareit.user.dto.UserDto;
 
-
 @Controller
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor

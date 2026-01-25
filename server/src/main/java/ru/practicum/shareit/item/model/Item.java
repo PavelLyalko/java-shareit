@@ -18,6 +18,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,7 +36,7 @@ public class Item {
     private ItemRequest request;
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Booking> bookings;
+    private List<Booking> bookings = new ArrayList<>();
     private String description;
     private Boolean available;
     @ManyToOne

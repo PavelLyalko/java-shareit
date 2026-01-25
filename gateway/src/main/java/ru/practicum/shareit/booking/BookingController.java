@@ -56,14 +56,14 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> acceptBooking(@RequestHeader(X_SHARER_USER_ID_VALUE) long userId,
-                                    @RequestParam(name = "approved") boolean approved,
-                                    @PathVariable long bookingId) {
+                                                @RequestParam(name = "approved") boolean approved,
+                                                @PathVariable long bookingId) {
         return bookingClient.acceptBooking(userId, approved, bookingId);
     }
 
     @GetMapping("/owner")
     public ResponseEntity<Object> getBookingsByOwner(@RequestHeader(X_SHARER_USER_ID_VALUE) long userId,
-                                               @RequestParam(required = false, defaultValue = "ALL") BookingState state) {
+                                                     @RequestParam(required = false, defaultValue = "ALL") BookingState state) {
         return bookingClient.getBookingsByOwner(userId, state);
     }
 }

@@ -23,7 +23,7 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     @Override
     public ResponseDto addRequest(RequestDto requestDto, long requestorId) {
-        User requestor = userRepository.findById(requestorId).orElseThrow(()-> new NotFoundException("не найден пользователь с id: " + requestorId));
+        User requestor = userRepository.findById(requestorId).orElseThrow(() -> new NotFoundException("не найден пользователь с id: " + requestorId));
         ItemRequest itemRequest = new ItemRequest();
         itemRequest.setDescription(requestDto.getDescription());
         itemRequest.setCreated(LocalDateTime.now());
@@ -34,7 +34,7 @@ public class RequestServiceImpl implements RequestService {
     @Transactional
     @Override
     public List<ResponseDto> getRequests(long requestorId) {
-        User requestor = userRepository.findById(requestorId).orElseThrow(()-> new NotFoundException("не найден пользователь с id: " + requestorId));
+        User requestor = userRepository.findById(requestorId).orElseThrow(() -> new NotFoundException("не найден пользователь с id: " + requestorId));
         List<ItemRequest> itemRequests = requestRepository.findAllRequestByRequestorId(requestor.getId());
         return itemRequests.stream().map(ItemRequestMapper::toResponseDto).sorted(Comparator.comparing(ResponseDto::getCreated).reversed()).toList();
     }
@@ -46,7 +46,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ResponseDto getRequestById(long requestId) {
-        ItemRequest itemRequest = requestRepository.findById(requestId).orElseThrow(()-> new NotFoundException("Запрос с id: "+ requestId + " не найден"));
+        ItemRequest itemRequest = requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Запрос с id: " + requestId + " не найден"));
         return ItemRequestMapper.toResponseDto(itemRequest);
     }
 }
