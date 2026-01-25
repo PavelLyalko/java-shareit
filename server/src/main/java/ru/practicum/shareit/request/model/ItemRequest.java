@@ -36,6 +36,6 @@ public class ItemRequest {
     private LocalDateTime created;
     @OneToMany(mappedBy = "request", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Item> itemsResponseList = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
 }
 

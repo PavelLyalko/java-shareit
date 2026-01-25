@@ -16,5 +16,5 @@ public class ResponseDto {
     private String description;
     private UserDto requester;
     private LocalDateTime created;
-    private List<ItemDto> itemsResponse;
+    private List<ItemDto> items;
 }

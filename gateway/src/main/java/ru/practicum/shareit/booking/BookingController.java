@@ -56,7 +56,7 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> acceptBooking(@RequestHeader(X_SHARER_USER_ID_VALUE) long userId,
-                                    @RequestParam("approved") boolean approved,
+                                    @RequestParam(name = "approved") boolean approved,
                                     @PathVariable long bookingId) {
         return bookingClient.acceptBooking(userId, approved, bookingId);
     }

@@ -46,7 +46,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ResponseDto getRequestById(long requestId) {
-        ItemRequest itemRequest = requestRepository.findById(requestId).orElseThrow(()-> new NotFoundException("предмет с id: "+ requestId + " не найден"));
+        ItemRequest itemRequest = requestRepository.findById(requestId).orElseThrow(()-> new NotFoundException("Запрос с id: "+ requestId + " не найден"));
         return ItemRequestMapper.toResponseDto(itemRequest);
     }
 }

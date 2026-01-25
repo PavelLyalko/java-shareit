@@ -12,7 +12,7 @@ public class ItemRequestMapper {
         responseDto.setDescription(itemRequest.getDescription());
         responseDto.setCreated(itemRequest.getCreated());
         responseDto.setRequester(UserMapper.toUserDto(itemRequest.getRequestor()));
-        responseDto.setItemsResponse(itemRequest.getItemsResponseList().stream().map(ItemMapper::toItemDto).toList());
+        responseDto.setItems(itemRequest.getItems().stream().map(ItemMapper::toItemDto).toList());
         return responseDto;
     }
 }

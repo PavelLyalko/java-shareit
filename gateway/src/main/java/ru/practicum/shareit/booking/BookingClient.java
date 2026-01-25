@@ -10,6 +10,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.client.BaseClient;
@@ -47,10 +48,13 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> acceptBooking(long userId, boolean approved, long bookingId) {
-        Map<String, Object> parameters = Map.of(
-                "approved", approved
+        String url = "/{bookingId}?approved=" + approved;
+
+        Map<String, Object> uriVariables = Map.of(
+                "bookingId", bookingId
         );
-        return patch("/" + bookingId, userId, parameters, null);
+
+        return patch(url, userId, uriVariables, null);
     }
 
     public ResponseEntity<Object> getBookingsByOwner(long userId, BookingState state) {
