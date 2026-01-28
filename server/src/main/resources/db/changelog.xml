@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="createUser" author="pavel">
+        <createTable tableName="users">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="varchar">
+                <constraints notNullConstraintName="users-not-null-email"/>
+            </column>
+            <column name="name" type="varchar">
+                <constraints notNullConstraintName="users-not-null-name"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createItem" author="pavel">
+        <createTable tableName="item">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar">
+                <constraints notNullConstraintName="item-not-null-name"/>
+            </column>
+            <column name="description" type="varchar"/>
+            <column name="available" type="boolean" defaultValue="true"/>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="item-to-user" references="users(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="renameColumnItem" author="pavel">
+        <renameColumn tableName="item"
+                      oldColumnName="user_id"
+                      newColumnName="owner_id"/>
+    </changeSet>
+    
+    <changeSet id="createRequest" author="pavel">
+        <createTable tableName="requests">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="varchar"/>
+            <column name="requestor_id" type="bigint">
+                <constraints foreignKeyName="request-to-user" references="users(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="addColumnCreated" author="pavel">
+        <addColumn tableName="requests">
+            <column name="created" type="datetime">
+            </column>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="addColumnItem" author="pavel">
+        <addColumn tableName="item">
+            <column name="request_id" type="bigint">
+                <constraints foreignKeyName="item-to-request" references="requests(id)"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    
+    <changeSet id="createComment" author="pavel">
+        <createTable tableName="comments">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="text" type="varchar"/>
+            <column name="item_id" type="bigint">
+                <constraints foreignKeyName="comments-to-item" references="item(id)"/>
+            </column>
+            <column name="author_id" type="bigint">
+                <constraints foreignKeyName="comments-to-user" references="users(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="createBooking" author="pavel">
+        <createTable tableName="bookings">
+            <column name="id" type="bigserial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="start_date" type="datetime"/>
+            <column name="end_date" type="datetime"/>
+            <column name="booker_id" type="bigint">
+                <constraints foreignKeyName="booking-to-user" references="users(id)"/>
+            </column>
+            <column name="status" type="varchar"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="addColumnCreatedComments" author="pavel">
+        <addColumn tableName="comments">
+            <column name="created" type="datetime">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="addColumnBookings" author="pavel">
+        <addColumn tableName="bookings">
+            <column name="item_id" type="bigint">
+                <constraints foreignKeyName="bookings-to-item" references="item(id)"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-email-check-constraint" author="yourname">
+        <addUniqueConstraint tableName="users" columnNames="email"/>
+    </changeSet>
+
+</databaseChangeLog>
