@@ -9,8 +9,9 @@ import org.springframework.test.context.ActiveProfiles;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.exception.InvalidException;
+import ru.practicum.shareit.exception.InvalidAccessException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.UserAccessDeniedException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentResponse;
 import ru.practicum.shareit.item.dto.ItemCommentsResponse;
@@ -109,7 +110,7 @@ public class ItemServiceImplIntegrationTest {
         item.setOwner(user);
         itemRepository.save(item);
 
-        assertThrows(InvalidException.class, () -> itemService.deleteItem(999L, item.getId()));
+        assertThrows(InvalidAccessException.class, () -> itemService.deleteItem(999L, item.getId()));
     }
 
     @Test
@@ -186,7 +187,7 @@ public class ItemServiceImplIntegrationTest {
         itemDto.setDescription("NewDescription");
         itemDto.setAvailable(false);
 
-        assertThrows(InvalidUserException.class, () -> itemService.editItem(999L, itemDto, item.getId()));
+        assertThrows(UserAccessDeniedException.class, () -> itemService.editItem(999L, itemDto, item.getId()));
     }
 
     @Test
@@ -288,6 +289,6 @@ public class ItemServiceImplIntegrationTest {
         commentDto.setUserId(user.getId());
         commentDto.setItemId(item.getId());
 
-        assertThrows(InvalidException.class, () -> itemService.addComment(commentDto));
+        assertThrows(InvalidAccessException.class, () -> itemService.addComment(commentDto));
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.CreateBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.exception.InvalidException;
+import ru.practicum.shareit.exception.InvalidAccessException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemRepository;
 import ru.practicum.shareit.user.UserRepository;
@@ -96,7 +96,7 @@ public class BookingServiceImplIntegrationTest {
         createBookingDto.setStart(LocalDateTime.now().plusDays(1));
         createBookingDto.setEnd(LocalDateTime.now().plusDays(2));
 
-        assertThrows(InvalidException.class, () -> bookingService.createBooking(createBookingDto));
+        assertThrows(InvalidAccessException.class, () -> bookingService.createBooking(createBookingDto));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class BookingServiceImplIntegrationTest {
         createBookingDto.setStart(LocalDateTime.now().plusDays(1));
         createBookingDto.setEnd(LocalDateTime.now().plusDays(2));
 
-        assertThrows(InvalidException.class, () -> bookingService.createBooking(createBookingDto));
+        assertThrows(InvalidAccessException.class, () -> bookingService.createBooking(createBookingDto));
     }
 
     @Test
@@ -183,7 +183,7 @@ public class BookingServiceImplIntegrationTest {
         booking.setItem(item);
         bookingRepository.save(booking);
 
-        assertThrows(InvalidException.class, () -> bookingService.acceptBooking(999L, true, booking.getId()));
+        assertThrows(InvalidAccessException.class, () -> bookingService.acceptBooking(999L, true, booking.getId()));
     }
 
     @Test
@@ -213,7 +213,7 @@ public class BookingServiceImplIntegrationTest {
         booking.setItem(item);
         bookingRepository.save(booking);
 
-        assertThrows(InvalidException.class, () -> bookingService.acceptBooking(owner.getId(), true, booking.getId()));
+        assertThrows(InvalidAccessException.class, () -> bookingService.acceptBooking(owner.getId(), true, booking.getId()));
     }
 
     @Test
@@ -276,7 +276,7 @@ public class BookingServiceImplIntegrationTest {
         booking.setItem(item);
         bookingRepository.save(booking);
 
-        assertThrows(InvalidException.class, () -> bookingService.getBooking(999L, booking.getId()));
+        assertThrows(InvalidAccessException.class, () -> bookingService.getBooking(999L, booking.getId()));
     }
 
     @Test

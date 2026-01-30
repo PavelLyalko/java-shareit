@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import ru.practicum.shareit.exception.DataValidationException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -59,7 +60,7 @@ public class UserServiceImplIntegrationTest {
     void saveUser_withInvalidEmail_throwsException() {
         UserDto userDto = new UserDto(null, "invalid-email", "New");
 
-        assertThrows(InvalidDataException.class, () -> userService.saveUser(userDto));
+        assertThrows(DataValidationException.class, () -> userService.saveUser(userDto));
     }
 
     @Test
@@ -71,7 +72,7 @@ public class UserServiceImplIntegrationTest {
 
         UserDto userDto = new UserDto(null, "duplicate@mail.com", "New");
 
-        assertThrows(InvalidDataException.class, () -> userService.saveUser(userDto));
+        assertThrows(DataValidationException.class, () -> userService.saveUser(userDto));
     }
 
     @Test
@@ -118,7 +119,7 @@ public class UserServiceImplIntegrationTest {
 
         UserDto updateDto = new UserDto(null, "invalid-email", "New");
 
-        assertThrows(InvalidDataException.class, () -> userService.updateUser(user.getId(), updateDto));
+        assertThrows(DataValidationException.class, () -> userService.updateUser(user.getId(), updateDto));
     }
 
 
