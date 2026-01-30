@@ -27,7 +27,7 @@ public class BookingController {
     @PostMapping
     public BookingDto createBooking(@RequestHeader(X_SHARER_USER_ID_VALUE) long userId,
                                     @RequestBody CreateBookingRequest request) {
-        CreateBookingDto createBookingDto = BookingDtoMapper.toCreateBookingDto(request);
+         CreateBookingDto createBookingDto = BookingDtoMapper.toCreateBookingDto(request);
         createBookingDto.setBookerId(userId);
         BookingDto bookingDto = bookingService.createBooking(createBookingDto);
         return bookingDto;

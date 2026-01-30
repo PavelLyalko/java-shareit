@@ -8,7 +8,7 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.InvalidAccessException;
-import ru.practicum.shareit.exception.InvalidUserException;
+import ru.practicum.shareit.exception.UserAccessDeniedException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentResponse;
@@ -120,7 +120,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto editItem(long userId, ItemDto itemDto, long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Предмет с id " + itemId + " не найден."));
         if (userId != item.getOwner().getId()) {
-            throw new InvalidUserException("Пользователь с id " + userId + " не имеет прав на редактирование предмета с id " + itemId);
+            throw new UserAccessDeniedException("Пользователь с id " + userId + " не имеет прав на редактирование предмета с id " + itemId);
         }
         if (itemDto.getName() != null && !itemDto.getName().isEmpty()) {
             item.setName(itemDto.getName());

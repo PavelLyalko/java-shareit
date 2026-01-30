@@ -2,7 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.InvalidDataException;
+import ru.practicum.shareit.exception.DataValidationException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -60,13 +60,13 @@ public class UserServiceImpl implements UserService {
     private boolean validationEmail(User user, List<UserDto> users) {
         Matcher matcher = EMAIL_PATTERN.matcher(user.getEmail());
         if (!matcher.matches()) {
-            throw new InvalidDataException("Неверный формат email");
+            throw new DataValidationException("Неверный формат email");
         }
         users.stream()
                 .filter(person -> person.getEmail().equals(user.getEmail()))
                 .findAny()
                 .ifPresent(person -> {
-                    throw new InvalidDataException("Пользователь с email " + user.getEmail() + " уже существует");
+                    throw new DataValidationException("Пользователь с email " + user.getEmail() + " уже существует");
                 });
         return true;
     }

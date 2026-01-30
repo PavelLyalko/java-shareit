@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item;
 
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,7 +36,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto add(@RequestHeader(X_SHARER_USER_ID_HEADER) Long userId,
-                    @Valid @RequestBody ItemDto itemDto) {
+                       @RequestBody ItemDto itemDto) {
         return itemService.addNewItem(userId, itemDto);//TODO ПРОВЕРИТЬ REQUEST_ID
     }
 
@@ -49,8 +48,8 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ItemDto editItem(@RequestHeader(X_SHARER_USER_ID_HEADER) long userId,
-                         @PathVariable long itemId,
-                         @RequestBody ItemDto itemDto) {
+                            @PathVariable long itemId,
+                            @RequestBody ItemDto itemDto) {
         return itemService.editItem(userId, itemDto, itemId);
     }
 

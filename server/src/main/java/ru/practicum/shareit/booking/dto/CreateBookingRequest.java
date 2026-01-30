@@ -1,16 +1,13 @@
 package ru.practicum.shareit.booking.dto;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Value;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Value
+@Data
 public class CreateBookingRequest {
-    @NotNull
-    LocalDateTime start;
-    @NotNull
-    LocalDateTime end;
-    long itemId;
-    long bookerId;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private long itemId;
+    private long bookerId;
 }

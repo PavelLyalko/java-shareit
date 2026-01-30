@@ -6,7 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.practicum.shareit.exception.InvalidUserException;
+import ru.practicum.shareit.exception.UserAccessDeniedException;
 import ru.practicum.shareit.exception.NotFoundException;
 
 import java.util.HashMap;
@@ -20,8 +20,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(InvalidUserException.class)
-    public ResponseEntity<String> handleInvalidUserException(InvalidUserException ex) {
+    @ExceptionHandler(UserAccessDeniedException.class)
+    public ResponseEntity<String> handleInvalidUserException(UserAccessDeniedException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
 
